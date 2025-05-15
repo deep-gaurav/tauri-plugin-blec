@@ -39,7 +39,9 @@ pub fn init<C: serde::de::DeserializeOwned>(
     api: tauri::plugin::PluginApi<Wry, C>,
 ) -> std::result::Result<(), crate::error::Error> {
     let handle = api.register_android_plugin("com.plugin.blec", "BleClientPlugin")?;
-    HANDLE.set(handle).unwrap();
+    if let Err(err) = HANDLE.set(handle).unwrap() {
+        tracing::warn!("failed to set handle: {:?}", err);
+    }
     Ok(())
 }
 
